@@ -1,6 +1,6 @@
+from Classes.NeuralNet import NeuralNet
 from Classes.DataReader import DataReader
-import matplotlib.pyplot as plt
 
-reader = DataReader('archive/train-images.idx3-ubyte', 'archive/train-labels.idx1-ubyte')
-images, labels = reader.load_and_read_data()
-
+net = NeuralNet('mnist_train.csv',
+                'mnist_test.csv')
+net.forward_propogate()
