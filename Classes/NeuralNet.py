@@ -3,9 +3,24 @@ import numpy as np
 
 
 def layer(function, a, weight, bias):
-    newVec = a.dot(weight)
-    a = function(newVec + bias)
+    newVec = a.dot(weight) + bias
+    newVec = batchnorm(newVec)  # apply batch normalization
+    a = function(newVec)
     return a
+
+
+def batchnorm(a):
+    """Center the data around 0, in batches"""
+    mean = np.mean(a, axis=0)
+    var = np.var(a, axis=0)
+    return (a - mean) / np.sqrt(var + 1e-7)
+
+
+def layernorm(a):
+    """Normalize across features instead of batches"""
+    mean = np.mean(a, axis=1, keepdims=True)
+    var = np.var(a, axis=1, keepdims=True)
+    return (a - mean) / np.sqrt(var + 1e-7)
 
 
 def sigmoid(x):
@@ -17,8 +32,13 @@ def ReLU(x):
     return y
 
 
+def leakyReLU(x, alpha=0.01):
+    """Alternate to regular ReLU"""
+    return np.maximum(alpha * x, x)
+
+
 def softmax(vector):
-    e = np.exp(vector)
+    e = np.exp(vector - np.max(vector))
     return e / e.sum()
 
 
@@ -36,11 +56,11 @@ class NeuralNet:
         # Consider Glorot initialization or He initialization
 
         self.l1_weights = np.random.rand(784, 16) * np.sqrt(2. / 784)
-        self.l1_bias = np.zeros(16)
+        self.l1_bias = np.random.rand(1, 16)
         self.l2_weights = np.random.rand(16, 16) * np.sqrt(2. / 16)
-        self.l2_bias = np.zeros(16)
-        self.l3_weights = np.random.rand(10, 10) * np.sqrt(2. / 16)
-        self.l3_bias = np.zeros(16)
+        self.l2_bias = np.random.rand(1, 16)
+        self.l3_weights = np.random.rand(16, 10) * np.sqrt(2. / 16)
+        self.l3_bias = np.random.rand(1, 10)
 
     def forward_propogate(self):
         """
@@ -53,9 +73,15 @@ class NeuralNet:
         HL2 -> Output:
             Output = softmax(((1, 16) * (16, 10)) + (1, 10))
         """
-        a = layer(ReLU, self.train_images, self.l1_weights, self.l1_bias)
-        a = layer(ReLU, a, self.l2_weights, self.l2_bias)
+        a = layer(leakyReLU, self.train_images, self.l1_weights, self.l1_bias)
+        print(a[0])
+        print("-----")
+        a = layer(leakyReLU, a, self.l2_weights, self.l2_bias)
+        print(a[0])
+        print("-----")
         a = layer(softmax, a, self.l3_weights, self.l3_bias)
+        print(a[0])
+        print("-----")
         return a
 
 
