@@ -43,6 +43,7 @@ def softmax(vector):
 
 
 class NeuralNet:
+
     def __init__(self, train, test):
         # QUESTION: Would it be a better design decision to update DatReader to take in train and test at the same time?
         tempReader = DataReader(train)
@@ -61,6 +62,7 @@ class NeuralNet:
         self.l2_bias = np.random.rand(1, 16)
         self.l3_weights = np.random.rand(16, 10) * np.sqrt(2. / 16)
         self.l3_bias = np.random.rand(1, 10)
+        self.a0, self.a1, self.a2 = None, None, None
 
     def forward_propogate(self):
         """
@@ -73,16 +75,16 @@ class NeuralNet:
         HL2 -> Output:
             Output = softmax(((1, 16) * (16, 10)) + (1, 10))
         """
-        a = layer(leakyReLU, self.train_images, self.l1_weights, self.l1_bias)
-        print(a[0])
+        self.a0 = layer(leakyReLU, self.train_images, self.l1_weights, self.l1_bias)
+        print(self.a0[0])
         print("-----")
-        a = layer(leakyReLU, a, self.l2_weights, self.l2_bias)
-        print(a[0])
+        self.a1 = layer(leakyReLU, self.a0, self.l2_weights, self.l2_bias)
+        print(self.a1[0])
         print("-----")
-        a = layer(softmax, a, self.l3_weights, self.l3_bias)
-        print(a[0])
+        self.a2 = layer(softmax, self.a1, self.l3_weights, self.l3_bias)
+        print(self.a2[0])
         print("-----")
-        return a
+        return self.a2
 
 
 
