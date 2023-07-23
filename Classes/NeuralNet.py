@@ -5,7 +5,7 @@ import numpy as np
 
 def layer(function, a, weight, bias):
     newVec = a.dot(weight) + bias
-    newVec = batchnorm(newVec)  # apply batch normalization
+    newVec = batchnorm(newVec)  # is this being applied correctly??
     a = function(newVec)
     return a
 
@@ -60,7 +60,7 @@ class NeuralNet:
     def __init__(self, train, test):
         # QUESTION: Would it be a better design decision to update DatReader to take in train and test at the same time?
         tempReader = DataReader(train)
-        self.train_images, self.train_labels = tempReader.get_train_test_split()
+        self.train_images, self.train_labels = tempReader.load_and_read_data()
         self.train_images = self.train_images / 255
 
         tempReader = DataReader(test)
