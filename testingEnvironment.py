@@ -3,4 +3,4 @@ from Classes.DataReader import DataReader
 
 net = NeuralNet('mnist_train.csv',
                 'mnist_test.csv')
-net.forward_propogate()
+net.train(400)
