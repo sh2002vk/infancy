@@ -1,5 +1,5 @@
 # infancy
-Building a Neural Network from scratch. My main goal is to reduce the degree of "black-box" understanding with NNs 
+Building a MLP Neural Network from scratch, using only numpy. My main goal is to reduce the degree of "black-box" understanding with NNs, specifically back-propogation 
 
 NOTE: Still need to add testing for accuracy
 
